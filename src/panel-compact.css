@@ -1,0 +1,12 @@
+/* Compact production panel details; scoped to the fixed panel column. */
+.production td.fixed,.production th.fixed{min-width:310px;width:310px;max-width:310px}
+.production td.fixed{padding:9px 12px;line-height:1.35}
+.production td.fixed .panel-set{font-size:16px;font-weight:800;color:var(--foreground);vertical-align:middle}
+.production td.fixed input[type=checkbox]{vertical-align:middle;margin:0 5px 0 0}
+.production td.fixed .panel-name{font-size:18px;font-weight:800;line-height:1.25;margin:5px 0 7px}
+.production td.fixed .panel-meta{grid-template-columns:112px minmax(0,1fr);gap:4px 8px;padding-top:6px;font-size:13px;line-height:1.3;align-items:center}
+.production td.fixed .panel-meta dt{white-space:nowrap}
+.production td.fixed .panel-meta dd{margin:0;overflow-wrap:anywhere}
+.production td.fixed .panel-meta input[type=number]{width:100%;max-width:90px;min-height:0;height:30px;padding:4px 7px;margin:0;font-size:13px}
+.production td.fixed .weight-comparison{padding-top:6px;font-size:12px;line-height:1.35}
+.production td.fixed .weight-comparison strong{display:block;margin-top:5px;font-size:13px}

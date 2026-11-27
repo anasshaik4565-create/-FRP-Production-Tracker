@@ -1,0 +1,92 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "postgresql"
+ url = env("DATABASE_URL")
+}
+model User {
+ id String @id @default(cuid())
+ email String @unique
+ password String
+ role String
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+}
+model Project {
+ id String @id @default(cuid())
+ name String
+ code String
+ count Int
+ active Boolean @default(true)
+ categories Category[]
+}
+model Category {
+ id String @id @default(cuid())
+ projectId String
+ project Project @relation(fields:[projectId],references:[id],onDelete:Cascade)
+ name String
+ panels PanelMaster[]
+ sets ProductionSet[]
+ stages ManufacturingStage[]
+ @@index([projectId])
+}
+model PanelMaster {
+ id String @id @default(cuid())
+ categoryId String
+ category Category @relation(fields:[categoryId],references:[id],onDelete:Cascade)
+ panelName String?
+ panelId String?
+ panelArea Decimal?
+ targetWeight Decimal?
+ weightTolerance Decimal?
+ sortOrder Int @default(0)
+ instances SetPanel[]
+ @@index([categoryId])
+}
+model ProductionSet {
+ id String @id @default(cuid())
+ categoryId String
+ category Category @relation(fields:[categoryId],references:[id],onDelete:Cascade)
+ number Int
+ panels SetPanel[]
+ @@unique([categoryId,number])
+}
+model SetPanel {
+ id String @id @default(cuid())
+ setId String
+ set ProductionSet @relation(fields:[setId],references:[id],onDelete:Cascade)
+ masterId String
+ master PanelMaster @relation(fields:[masterId],references:[id],onDelete:Cascade)
+ actualWeight Decimal?
+ records PanelStageStatus[]
+ @@unique([setId,masterId])
+ @@index([masterId])
+}
+model ManufacturingStage {
+ id String @id @default(cuid())
+ categoryId String
+ category Category @relation(fields:[categoryId],references:[id],onDelete:Cascade)
+ name String
+ sortOrder Int @default(0)
+ records PanelStageStatus[]
+ @@index([categoryId])
+}
+model PanelStageStatus {
+ id String @id @default(cuid())
+ panelId String
+ panel SetPanel @relation(fields:[panelId],references:[id],onDelete:Cascade)
+ stageId String
+ stage ManufacturingStage @relation(fields:[stageId],references:[id],onDelete:Cascade)
+ planned String?
+ actual String?
+ status String @default("Not Yet Started")
+ qc String @default("Pending")
+ remarks String?
+ @@unique([panelId,stageId])
+ @@index([stageId])
+}
+model ColorSettings {
+ key String @id
+ color String
+}
