@@ -29,6 +29,7 @@ model Category {
  panels PanelMaster[]
  sets ProductionSet[]
  stages ManufacturingStage[]
+ containerPlans ContainerPlan[]
  @@index([projectId])
 }
 model PanelMaster {
@@ -42,6 +43,7 @@ model PanelMaster {
  weightTolerance Decimal?
  sortOrder Int @default(0)
  instances SetPanel[]
+ containerItems ContainerItem[]
  @@index([categoryId])
 }
 model ProductionSet {
@@ -49,6 +51,8 @@ model ProductionSet {
  categoryId String
  category Category @relation(fields:[categoryId],references:[id],onDelete:Cascade)
  number Int
+ containerPlanId String?
+ containerPlan ContainerPlan? @relation(fields:[containerPlanId],references:[id],onDelete:Restrict)
  panels SetPanel[]
  @@unique([categoryId,number])
 }
@@ -89,4 +93,29 @@ model PanelStageStatus {
 model ColorSettings {
  key String @id
  color String
+}
+
+model ContainerPlan {
+ id String @id @default(cuid())
+ categoryId String
+ category Category @relation(fields:[categoryId],references:[id],onDelete:Cascade)
+ number String
+ type String
+ planned String?
+ actual String?
+ status String @default("Planned")
+ remarks String?
+ generated Boolean @default(false)
+ items ContainerItem[]
+ sets ProductionSet[]
+ @@unique([categoryId,number])
+}
+model ContainerItem {
+ id String @id @default(cuid())
+ planId String
+ plan ContainerPlan @relation(fields:[planId],references:[id],onDelete:Cascade)
+ masterId String
+ master PanelMaster @relation(fields:[masterId],references:[id],onDelete:Restrict)
+ quantity Int
+ @@unique([planId,masterId])
 }
